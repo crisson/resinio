@@ -11,6 +11,24 @@ html
 
       #letters-cnt{}
 
+      .outer {
+          display: table;
+          position: absolute;
+          height: 100%;
+          width: 100%;
+      }
+
+      .middle {
+          display: table-cell;
+          vertical-align: middle;
+      }
+
+      .inner {
+          margin-left: auto;
+          margin-right: auto; 
+          width: /*whatever width you want*/;
+      }
+
       .letter-slot, .letter-suggestion{
         border: none;
         border-bottom: 1px solid #000;
@@ -29,9 +47,10 @@ html
       }
 
       #letter-suggestion-cnt {
-        position: absolute;
-        right: 10%;
-        top: 50%;
+        background-color: #ffffff;
+        width: 200px;
+        margin: 20px auto 0;
+        padding: 20px;
       }
 
       .is-invisible {

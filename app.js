@@ -1,70 +1,162 @@
 /* jshint asi:true, unused:true, undef:true, devel:true, browser:true */
-/* global Point, Path, swal */
+/* global Point, Path, Circle, swal */
 
-var path = new Path();
-path.strokeColor = 'black';
-path.add(new Point(75, 100));
-path.add(new Point(125, 100));
-path.closed = true;
+var color = 'black'
 
-var p1 = new Path();
-p1.strokeColor = 'black';
-p1.add(new Point(100, 25));
-p1.add(new Point(100, 100));
-p1.closed = true;
+function makeStand() {
+    var path = new Path();
+    path.strokeColor = color;
+    path.add(new Point(75, 100));
+    path.add(new Point(125, 100));
+    path.closed = true;
 
-var p2 = new Path();
-p2.strokeColor = 'black';
-p2.add(new Point(100, 25));
-p2.add(new Point(75, 25));
-p2.closed = true;
+    var p1 = new Path();
+    p1.strokeColor = color;
+    p1.add(new Point(100, 25));
+    p1.add(new Point(100, 100));
+    p1.closed = true;
 
+    var p2 = new Path();
+    p2.strokeColor = color;
+    p2.add(new Point(100, 25));
+    p2.add(new Point(75, 25));
+    p2.closed = true;
 
-function StickFigure() {
+    var noose = new Path()
+    noose.strokeColor = color
+    noose.add(new Point(75, 25))
+    noose.add(new Point(75, 30))
+    noose.closd = true
 
 }
 
 
+function StickFigure() {}
 
-function Hangman() {
+function Hangman(stand) {
+
     StickFigure.call(this)
+
+    this.strokeColor = 'red'
+
+    this.stand = stand
+
+    /**
+     * Parts of the hangman's body
+     * @type {Array}
+     */
+    this.parts = []
+
+    this.actions = [
+        this.makeHead,
+        this.makeTorso,
+        this.makeLeftArm,
+        this.makeRightArm,
+        this.makeleftLeg,
+        this.makeRightLeg
+    ]
+
 }
 
-Hangman.prototype = new StickFigure()
+Hangman.prototype = Object.create(StickFigure.prototype)
 
-Hangman.prototype.makehead = function() {
-    // body...
+Hangman.prototype.makeHead = function() {
+    console.info('drawing head')
+    var head = new Path.Circle({
+        center: new Point(75, 35),
+        radius: 5,
+        strokeColor: this.strokeColor
+    })
+
+    this.parts.push(head)
 }
+
+Hangman.prototype.makeTorso = function() {
+    console.info('drawing torso')
+    var torso = new Path()
+    torso.strokeColor = this.strokeColor
+    torso.add(new Point(75, 40))
+    torso.add(new Point(75, 60))
+    torso.closed = true
+
+    this.parts.push(torso)
+};
 
 Hangman.prototype.makeLeftArm = function() {
-    // body...
+    console.info('drawing left arm')
+    var arm = new Path()
+    arm.strokeColor = this.strokeColor
+    arm.add(new Point(75, 50))
+    arm.add(new Point(70, 45))
+    arm.closed = true
+
+    this.parts.push(arm)
 }
 
 Hangman.prototype.makeRightArm = function() {
-    // body...
+    console.info('drawing right arm')
+    var arm = new Path()
+    arm.strokeColor = this.strokeColor
+    arm.add(new Point(75, 50))
+    arm.add(new Point(80, 45))
+    arm.closed = true
+
+    this.parts.push(arm)
 }
 
 Hangman.prototype.makeleftLeg = function() {
-    // body...
+    console.info('drawing left leg')
+    var leg = new Path()
+    leg.strokeColor = this.strokeColor
+    leg.add(new Point(75, 60))
+    leg.add(new Point(70, 65))
+    leg.closed = true
+
+    this.parts.push(leg)
 }
 
 Hangman.prototype.makeRightLeg = function() {
-    // body...
+    console.info('drawing left leg')
+    var leg = new Path()
+    leg.strokeColor = this.strokeColor
+    leg.add(new Point(75, 60))
+    leg.add(new Point(80, 65))
+    leg.closed = true
+
+    this.parts.push(leg)
 }
+
+/**
+ * (Eventually) renders a body part
+ * @return {Boolean} whether any body parts remain
+ */
+Hangman.prototype.makeNext = function() {
+    var act = this.actions.shift()
+    if (!act) {
+        console.warn('attempted to draw hangman section that does not exist')
+        return
+    }
+
+    act.call(this)
+    // window.requestAnimationFrame()
+    return this.actions.length
+};
+
+Hangman.prototype.cleanup = function() {
+    this.parts.forEach(function(item){
+        item.remove()
+    })
+};
 
 StickFigure.make = function() {
     return new StickFigure()
 }
 
 StickFigure.makeHangman = function() {
-    return new Hangman()
+    var hm = new Hangman()
+    return hm
 }
 
-/**
- * Encapsulates the state of hangman and exposes methods to manipulate its state
- * @type {Hangman}
- */
-var hangman = StickFigure.makeHangman()
 
 /**
  * Retrieves word list and passes the list converted to an array to the
@@ -95,7 +187,8 @@ function getWorldList(fn) {
  * with a new word
  */
 function setWord(word, cont) {
-    var child, suggestion;
+    var child, suggestion, gameOver = false, 
+        hm = StickFigure.makeHangman();
 
     console.log(word)
 
@@ -119,6 +212,12 @@ function setWord(word, cont) {
 
     function onKeyup(e) {
         var l = (e.target.value || '').trim().toLowerCase()
+
+        if (gameOver) {
+            console.warn("doing nothing since the game has ended")
+            return;
+        }
+
         if (!l) {
             console.warn('disabling "check validity" button')
             disableCheckButton()
@@ -141,7 +240,24 @@ function setWord(word, cont) {
     function resetSuggestion() {
         suggestion.value = ''
         disableCheckButton()
+        suggestion.blur()
         suggestion.focus()
+    }
+
+    function triggerDefeat () {
+        swal({
+            title: 'It seems failure is an option',
+            text: 'Would you like to play again?',
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            type: 'error',
+            confirmButtonText: "Next hangman up!",
+            cancelButtonText: "Offer clemency.",
+            closeOnConfirm: true
+        }, function(){
+            hm.cleanup()
+            cleanup()
+        })
     }
 
 
@@ -162,7 +278,6 @@ function setWord(word, cont) {
             cancelButtonText: "Offer clemency.",
             closeOnConfirm: true
         }, function() {
-            console.log('here')
             cleanup()
         })
     }
@@ -194,10 +309,18 @@ function setWord(word, cont) {
             return triggerWin()
         }
 
-        // Resetting the suggested character
+        // Resetting the suggested character because the user supplied a
+        // character in the current word
         if (count) {
             return resetSuggestion()
         }
+
+        // No letter matched, so add another body part
+        var next = hm.makeNext()
+        if (!next) {
+            return triggerDefeat()
+        }
+        resetSuggestion()
     }
 
 
@@ -227,24 +350,30 @@ function setWord(word, cont) {
 
 }
 
-getWorldList(function(words) {
-    var minWordLength = 5;
-    var ls = words.filter(function(w) {
-        return w.length > minWordLength;
-    }).map(function(w) {
-        return w.toLowerCase()
+
+function main() {
+    makeStand()
+    getWorldList(function(words) {
+        var minWordLength = 5;
+        var ls = words.filter(function(w) {
+            return w.length > minWordLength;
+        }).map(function(w) {
+            return w.toLowerCase()
+        });
+
+        var len = ls.length;
+        var maxIdx = len - 1;
+
+        function reset() {
+            var randomWordIdx = Math.ceil(Math.random() * maxIdx);
+            var rando = ls[randomWordIdx]
+            return rando
+        }
+
+        setWord(reset(), function cont() {
+            setWord(reset(), cont)
+        });
     });
+}
 
-    var len = ls.length;
-    var maxIdx = len - 1;
-
-    function reset() {
-        var randomWordIdx = Math.ceil(Math.random() * maxIdx);
-        var rando = ls[randomWordIdx]
-        return rando
-    }
-
-    setWord(reset(), function cont() {
-        return setWord(reset(), cont)
-    });
-});
+main()
