@@ -1,0 +1,51 @@
+doctype
+html
+  head
+    link(rel="stylesheet" href="/main.css")
+    link(rel="stylesheet" href="/reset.css")
+    link(rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/buttons-min.css")
+    style.
+      body {
+        font-family: 'HelveticaNeue', 'Helvetica',Arial,sans-serif;
+      }
+
+      #letters-cnt{}
+
+      .letter-slot, .letter-suggestion{
+        border: none;
+        border-bottom: 1px solid #000;
+        width: 100px;
+        margin-right: 10px;
+        height: 50px;
+        background-color: initial;
+        outline: none;
+        font-size: 3rem;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .letter-slot {
+        display: inline-block;
+      }
+
+      #letter-suggestion-cnt {
+        position: absolute;
+        right: 10%;
+        top: 50%;
+      }
+
+      .is-invisible {
+        visibility: none;
+      }
+
+      .letter-full{}
+
+      button {
+        margin-top: 20px;
+      }
+  body
+    != yield
+    script(src='./paper-full.min.js')
+    script(src='./app.js' type="text/paperscript" canvas="myCanvas")
+    script(src="lib/sweet-alert.min.js")
+    link(rel="stylesheet" type="text/css" href="lib/sweet-alert.css")
