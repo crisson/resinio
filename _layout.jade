@@ -10,7 +10,10 @@ html
       }
 
       #letters-cnt{
+        margin-top: 20px;
         display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
       }
 
       .outer {
@@ -45,8 +48,7 @@ html
       }
 
       .letter-slot {
-        flex-grow: 1;
-        justify-content: center
+        margin-bottom: 50px;
       }
 
       #letter-suggestion-cnt {
@@ -67,7 +69,6 @@ html
       }
   body
     != yield
-    script(src='./paper-full.min.js')
-    script(src='./app.js' type="text/paperscript" canvas="myCanvas")
+    script(src='./app.js')
     script(src="lib/sweet-alert.min.js")
     link(rel="stylesheet" type="text/css" href="lib/sweet-alert.css")
