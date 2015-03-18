@@ -4,29 +4,56 @@
 var color = 'black'
 
 function makeStand() {
-    var path = new Path();
-    path.strokeColor = color;
-    path.add(new Point(75, 100));
-    path.add(new Point(125, 100));
-    path.closed = true;
+    // var path = new Path();
+    // path.strokeColor = color;
+    // path.add(new Point(75, 100));
+    // path.add(new Point(125, 100));
+    // path.closed = true;
 
-    var p1 = new Path();
-    p1.strokeColor = color;
-    p1.add(new Point(100, 25));
-    p1.add(new Point(100, 100));
-    p1.closed = true;
+    // var p1 = new Path();
+    // p1.strokeColor = color;
+    // p1.add(new Point(100, 25));
+    // p1.add(new Point(100, 100));
+    // p1.closed = true;
 
-    var p2 = new Path();
-    p2.strokeColor = color;
-    p2.add(new Point(100, 25));
-    p2.add(new Point(75, 25));
-    p2.closed = true;
+    // var p2 = new Path();
+    // p2.strokeColor = color;
+    // p2.add(new Point(100, 25));
+    // p2.add(new Point(75, 25));
+    // p2.closed = true;
 
-    var noose = new Path()
-    noose.strokeColor = color
-    noose.add(new Point(75, 25))
-    noose.add(new Point(75, 30))
-    noose.closd = true
+    // var noose = new Path()
+    // noose.strokeColor = color
+    // noose.add(new Point(75, 25))
+    // noose.add(new Point(75, 30))
+    // noose.closd = true
+
+    var canvas = document.querySelector('#myCanvas')
+    var ctx = canvas.getContext('2d')
+
+    ctx.beginPath()
+    ctx.strokeStyle = color
+    ctx.moveTo(75, 100)
+    ctx.lineTo(125, 100)
+    ctx.stroke()
+    ctx.closePath()
+
+    ctx.moveTo(100, 25)
+    ctx.lineTo(100, 100)
+    ctx.stroke()
+    ctx.closePath()
+
+    ctx.moveTo(100, 25)
+    ctx.lineTo(75, 25)
+    ctx.stroke()
+    ctx.closePath()
+
+    ctx.moveTo(75, 25)
+    ctx.lineTo(75, 30)
+    ctx.stroke()
+
+    ctx.closePath()
+
 
 }
 
@@ -40,6 +67,9 @@ function Hangman(stand) {
     this.strokeColor = 'red'
 
     this.stand = stand
+
+    this.canvas = document.querySelector('#myCanvas')
+    this.ctx = this.canvas.getContext('2d')
 
     /**
      * Parts of the hangman's body
@@ -61,69 +91,63 @@ function Hangman(stand) {
 Hangman.prototype = Object.create(StickFigure.prototype)
 
 Hangman.prototype.makeHead = function() {
-    console.info('drawing head')
-    var head = new Path.Circle({
-        center: new Point(75, 35),
-        radius: 5,
-        strokeColor: this.strokeColor
-    })
 
-    this.parts.push(head)
+    this.ctx.beginPath()
+    // this.ctx.moveTo(75, 55)
+    this.ctx.arc(75, 35, 5, 0, 2 * Math.PI, false);
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.stroke();
+
 }
 
 Hangman.prototype.makeTorso = function() {
     console.info('drawing torso')
-    var torso = new Path()
-    torso.strokeColor = this.strokeColor
-    torso.add(new Point(75, 40))
-    torso.add(new Point(75, 60))
-    torso.closed = true
 
-    this.parts.push(torso)
+    this.ctx.beginPath()
+    this.ctx.moveTo(75, 40)
+    this.ctx.lineTo(75, 60)
+    this.ctx.stroke()
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.closePath()
 };
 
 Hangman.prototype.makeLeftArm = function() {
-    console.info('drawing left arm')
-    var arm = new Path()
-    arm.strokeColor = this.strokeColor
-    arm.add(new Point(75, 50))
-    arm.add(new Point(70, 45))
-    arm.closed = true
-
-    this.parts.push(arm)
+    this.ctx.beginPath()
+    this.ctx.moveTo(75, 50)
+    this.ctx.lineTo(70, 45)
+    this.ctx.stroke()
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.closePath()
 }
 
 Hangman.prototype.makeRightArm = function() {
-    console.info('drawing right arm')
-    var arm = new Path()
-    arm.strokeColor = this.strokeColor
-    arm.add(new Point(75, 50))
-    arm.add(new Point(80, 45))
-    arm.closed = true
 
-    this.parts.push(arm)
+    this.ctx.beginPath()
+    this.ctx.moveTo(75, 50)
+    this.ctx.lineTo(80, 45)
+    this.ctx.stroke()
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.closePath()
 }
 
 Hangman.prototype.makeleftLeg = function() {
-    console.info('drawing left leg')
-    var leg = new Path()
-    leg.strokeColor = this.strokeColor
-    leg.add(new Point(75, 60))
-    leg.add(new Point(70, 65))
-    leg.closed = true
 
-    this.parts.push(leg)
+    this.ctx.beginPath()
+    this.ctx.moveTo(75, 60)
+    this.ctx.lineTo(70, 65)
+    this.ctx.stroke()
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.closePath()
 }
 
 Hangman.prototype.makeRightLeg = function() {
-    console.info('drawing left leg')
-    var leg = new Path()
-    leg.strokeColor = this.strokeColor
-    leg.add(new Point(75, 60))
-    leg.add(new Point(80, 65))
-    leg.closed = true
 
-    this.parts.push(leg)
+    this.ctx.beginPath()
+    this.ctx.moveTo(75, 60)
+    this.ctx.lineTo(80, 65)
+    this.ctx.stroke()
+    this.ctx.strokeStyle = this.strokeColor
+    this.ctx.closePath()
 }
 
 /**
@@ -138,14 +162,11 @@ Hangman.prototype.makeNext = function() {
     }
 
     act.call(this)
-    // window.requestAnimationFrame()
     return this.actions.length
 };
 
 Hangman.prototype.cleanup = function() {
-    this.parts.forEach(function(item){
-        item.remove()
-    })
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 };
 
 StickFigure.make = function() {
@@ -190,11 +211,12 @@ function setWord(word, cont) {
     var child, suggestion, gameOver = false, 
         hm = StickFigure.makeHangman();
 
-    console.log(word)
+    // console.log(word)
+    makeStand()
 
     var suggestionSelector = 'letter-suggestion'
     var input = '<input class="letter-suggestion" maxlength="1"/>';
-    var span = '<span class="letter-slot" />';
+    var div = '<div class="letter-slot"></div>';
 
     var cnt = document.querySelector('#letters-cnt');
     var lsc = document.querySelector('#letter-suggestion-cnt')
@@ -247,7 +269,7 @@ function setWord(word, cont) {
     function triggerDefeat () {
         swal({
             title: 'It seems failure is an option',
-            text: 'Would you like to play again?',
+            text: '"' + word + '"' + '\n\nWould you like to play again? \n\n',
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             type: 'error',
@@ -266,11 +288,9 @@ function setWord(word, cont) {
     }
 
     function triggerWin() {
-        console.log('triggering win')
         swal({
             title: "Good Job, tyrant!",
             text: "Would you like to play again?",
-            // timer: 6000,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             type: 'success',
@@ -278,6 +298,7 @@ function setWord(word, cont) {
             cancelButtonText: "Offer clemency.",
             closeOnConfirm: true
         }, function() {
+            hm.cleanup()
             cleanup()
         })
     }
@@ -303,7 +324,7 @@ function setWord(word, cont) {
             }
         }
 
-        // Yay!
+        // You win the game!
         if (lastWord.slice().join('') === word) {
             resetSuggestion()
             return triggerWin()
@@ -326,7 +347,7 @@ function setWord(word, cont) {
 
     for (var i = word.length - 1; i >= 0; i--) {
         lastWord[i] = null;
-        cnt.insertAdjacentHTML('afterbegin', span);
+        cnt.insertAdjacentHTML('afterbegin', div);
     }
 
     for (var j = cnt.children.length - 1; j >= 0; j--) {
@@ -352,7 +373,7 @@ function setWord(word, cont) {
 
 
 function main() {
-    makeStand()
+
     getWorldList(function(words) {
         var minWordLength = 5;
         var ls = words.filter(function(w) {
@@ -370,6 +391,8 @@ function main() {
             return rando
         }
 
+        // Setup the hangman ui and allow the user to reset the game when they
+        // win/lose
         setWord(reset(), function cont() {
             setWord(reset(), cont)
         });

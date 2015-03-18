@@ -9,7 +9,9 @@ html
         font-family: 'HelveticaNeue', 'Helvetica',Arial,sans-serif;
       }
 
-      #letters-cnt{}
+      #letters-cnt{
+        display: flex;
+      }
 
       .outer {
           display: table;
@@ -43,7 +45,8 @@ html
       }
 
       .letter-slot {
-        display: inline-block;
+        flex-grow: 1;
+        justify-content: center
       }
 
       #letter-suggestion-cnt {
