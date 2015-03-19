@@ -320,6 +320,8 @@
                 if (l === char) {
                     // console.info('found char', char, 'applying it to idx', k)
                     inp.innerText = char
+                    // for firefox
+                    inp.textContent = char
                     lastWord[k] = char
                     count = 1
                 }
